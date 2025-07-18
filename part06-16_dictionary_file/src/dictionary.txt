@@ -1,0 +1,9 @@
+auto;car
+laukku;bag
+auto;car
+tietokone;computer
+tieto;knowledge
+tietoisuus;conscience
+uida;swim
+uimari;swimmer
+uimapuku;swimsuit
