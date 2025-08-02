@@ -1,25 +1,25 @@
 # Write your solution here:
 class OrderBook:
     def __init__(self):
-        self.orders = []
+        self.__orders = []
 
     def add_order(self, description, programmer, workload):
-        self.orders.append(Task(description, programmer, workload))
+        self.__orders.append(Task(description, programmer, workload))
 
     def all_orders(self):
-        return self.orders
+        return self.__orders
     
     def programmers(self):
         # only contain each programmer once
         self.names = []
-        for order in self.orders:
+        for order in self.__orders:
             if order.programmer not in self.names:
                 self.names.append(order.programmer)
         return self.names
     
     def mark_finished(self, id: int):
         id_found = False
-        for order in self.orders:
+        for order in self.__orders:
             if id == order.id:
                 order.mark_finished()
                 id_found = True
@@ -27,10 +27,29 @@ class OrderBook:
             raise ValueError("There is no order with that ID!")
     
     def finished_orders(self):
-        return [order for order in self.orders if order.is_finished()]
+        return [order for order in self.__orders if order.is_finished()]
     
     def unfinished_orders(self):
-        return [order for order in self.orders if not order.is_finished()]
+        return [order for order in self.__orders if not order.is_finished()]
+    
+    def status_of_programmer(self, programmer: str):
+        finished = 0
+        unfinished = 0
+        hours_finished = 0
+        hours_unfinished = 0
+        found = False
+        for order in self.__orders:
+            if programmer == order.programmer:
+                found = True
+                if order.is_finished():
+                    finished += 1
+                    hours_finished += order.workload
+                else:
+                    unfinished += 1
+                    hours_unfinished += order.workload
+        if not found:
+            raise ValueError("This programmer hasn't been assigned a task!")
+        return (finished, unfinished, hours_finished, hours_unfinished)
 
 class Task:
     instance_count = 0
@@ -89,15 +108,27 @@ if __name__ == "__main__":
     # for order in orders.all_orders():
     #     print(order)
 
-    t = OrderBook()
-    t.add_order("program web store", "Andy", 10)
-    unfinished = t.unfinished_orders()
+    # t = OrderBook()
+    # t.add_order("program web store", "Andy", 10)
+    # unfinished = t.unfinished_orders()
 
-    u = OrderBook()
-    u.add_order("program web store", "Andy", 10)
-    u.add_order("program mobile gane", "Eric", 5)
-    u.add_order("code better facebook", "Jonas", 5000)
-    u.mark_finished(1)
-    u.mark_finished(2)
-    u.finished_orders()
-    u.unfinished_orders()
+    # u = OrderBook()
+    # u.add_order("program web store", "Andy", 10)
+    # u.add_order("program mobile gane", "Eric", 5)
+    # u.add_order("code better facebook", "Jonas", 5000)
+    # u.mark_finished(1)
+    # u.mark_finished(2)
+    # u.finished_orders()
+    # u.unfinished_orders()
+
+    orders = OrderBook()
+    orders.add_order("program webstore", "Adele", 10)
+    orders.add_order("program mobile app for workload accounting", "Adele", 25)
+    orders.add_order("program app for practising mathematics", "Adele", 100)
+    orders.add_order("program the next facebook", "Eric", 1000)
+
+    orders.mark_finished(1)
+    orders.mark_finished(2)
+
+    status = orders.status_of_programmer("Adele")
+    print(status)
