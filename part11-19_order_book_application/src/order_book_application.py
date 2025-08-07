@@ -5,7 +5,7 @@ class OrderBookApplication:
 
     def help(self):
         print("commands:")
-        print("0 exit 1 add order")
+        print("0 exit 1 add order 2 list finished tasks 3 list unfinished tasks 4 mark task as finished 5 programmers 6 status of programmer")
 
     def execute(self):
         self.help()
@@ -18,10 +18,33 @@ class OrderBookApplication:
                 description = input("description: ")
                 programmer_and_workload = input("programmer and workload estimate: ")
                 programmer, workload = programmer_and_workload.split(" ")
-                print(programmer)
-                print(workload)
                 self.__orderbook.add_order(description, programmer, workload)
                 print("added!")
+            elif command == 2:
+                finished = self.__orderbook.finished_orders()
+                if finished == []:
+                    print("no finished tasks")
+                else:
+                    for task in finished:
+                        print(task)
+            elif command == 3:
+                unfinished = self.__orderbook.unfinished_orders()
+                if unfinished == []:
+                    print("no unfinished tasks")
+                else:
+                    for task in unfinished:
+                        print(task)
+            elif command == 4:
+                id = int(input("id: "))
+                self.__orderbook.mark_finished(id)
+                print("marked as finished")
+            elif command == 5:
+                names = self.__orderbook.programmers()
+                [print(name) for name in names]
+            elif command == 6:
+                programmer = input("programmer: ")
+                status = self.__orderbook.status_of_programmer(programmer)
+                print(f"tasks: finished {status[0]} not finished {status[1]}, hours: done {status[2]} scheduled {status[3]}")
 
 # If you use the classes made in the previous exercise, copy them here
 class OrderBook:
@@ -68,10 +91,10 @@ class OrderBook:
                 found = True
                 if order.is_finished():
                     finished += 1
-                    hours_finished += order.workload
+                    hours_finished += int(order.workload)
                 else:
                     unfinished += 1
-                    hours_unfinished += order.workload
+                    hours_unfinished += int(order.workload)
         if not found:
             raise ValueError("This programmer hasn't been assigned a task!")
         return (finished, unfinished, hours_finished, hours_unfinished)
@@ -96,6 +119,6 @@ class Task:
     def __str__(self):
         return f"{self.id}: {self.description} ({self.workload} hours), programmer {self.programmer} {'FINISHED' if self.state else 'NOT FINISHED'}"
     
-if __name__ == "__main__":
-    application = OrderBookApplication()
-    application.execute()
+
+application = OrderBookApplication()
+application.execute()
