@@ -15,41 +15,77 @@ class OrderBookApplication:
             if command == 0:
                 break
             elif command == 1:
-                description = input("description: ")
-                programmer_and_workload = input("programmer and workload estimate: ")
-                programmer, workload = programmer_and_workload.split(" ")
+                self.add()
+            elif command == 2:
+                self.finished()
+            elif command == 3:
+                self.unfinished()
+            elif command == 4:
+                self.id()
+            elif command == 5:
+                self.programmers()
+            elif command == 6:
+                self.status_of_tasks()
+        
+    def add(self):
+        description = input("description: ")
+        programmer_and_workload = input("programmer and workload estimate: ")
+        if " " in programmer_and_workload and len(programmer_and_workload.split(" ")) == 2:
+            programmer, workload = programmer_and_workload.split(" ")
+            if workload.isdigit():
                 self.__orderbook.add_order(description, programmer, workload)
                 print("added!")
-            elif command == 2:
-                finished = self.__orderbook.finished_orders()
-                if finished == []:
-                    print("no finished tasks")
-                else:
-                    for task in finished:
-                        print(task)
-            elif command == 3:
-                unfinished = self.__orderbook.unfinished_orders()
-                if unfinished == []:
-                    print("no unfinished tasks")
-                else:
-                    for task in unfinished:
-                        print(task)
-            elif command == 4:
-                id = int(input("id: "))
-                self.__orderbook.mark_finished(id)
+            else:
+                print("erroneous input")
+        else:
+            print("erroneous input")
+    
+    def finished(self):
+        finished = self.__orderbook.finished_orders()
+        if finished == []:
+            print("no finished tasks")
+        else:
+            for task in finished:
+                print(task)
+
+    def unfinished(self):
+        unfinished = self.__orderbook.unfinished_orders()
+        if unfinished == []:
+            print("no unfinished tasks")
+        else:
+            for task in unfinished:
+                print(task)
+    
+    def id(self):
+        id = (input("id: "))
+        if id.isdigit():
+            if int(id) <= len(self.__orderbook):
+                self.__orderbook.mark_finished(int(id))
                 print("marked as finished")
-            elif command == 5:
-                names = self.__orderbook.programmers()
-                [print(name) for name in names]
-            elif command == 6:
-                programmer = input("programmer: ")
-                status = self.__orderbook.status_of_programmer(programmer)
-                print(f"tasks: finished {status[0]} not finished {status[1]}, hours: done {status[2]} scheduled {status[3]}")
+            else:
+                print("erroneous input")
+        else:
+            print("erroneous input")
+    
+    def programmers(self):
+        names = self.__orderbook.programmers()
+        [print(name) for name in names]
+    
+    def status_of_tasks(self):
+        programmer = input("programmer: ")
+        if programmer in self.__orderbook.programmers():
+            status = self.__orderbook.status_of_programmer(programmer)
+            print(f"tasks: finished {status[0]} not finished {status[1]}, hours: done {status[2]} scheduled {status[3]}")
+        else:
+            print("erroneous input")
 
 # If you use the classes made in the previous exercise, copy them here
 class OrderBook:
     def __init__(self):
         self.__orders = []
+    
+    def __len__(self):
+        return len(self.__orders)
 
     def add_order(self, description, programmer, workload):
         self.__orders.append(Task(description, programmer, workload))
