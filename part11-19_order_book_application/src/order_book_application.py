@@ -5,7 +5,7 @@ class OrderBookApplication:
 
     def help(self):
         print("commands:")
-        print("0 exit")
+        print("0 exit 1 add order")
 
     def execute(self):
         self.help()
@@ -14,6 +14,14 @@ class OrderBookApplication:
             command = int(input("command: "))
             if command == 0:
                 break
+            elif command == 1:
+                description = input("description: ")
+                programmer_and_workload = input("programmer and workload estimate: ")
+                programmer, workload = programmer_and_workload.split(" ")
+                print(programmer)
+                print(workload)
+                self.__orderbook.add_order(description, programmer, workload)
+                print("added!")
 
 # If you use the classes made in the previous exercise, copy them here
 class OrderBook:
